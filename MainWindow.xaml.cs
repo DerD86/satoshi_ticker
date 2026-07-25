@@ -227,15 +227,6 @@ public partial class MainWindow : Window
         }
     }
 
-    private void Window_Deactivated(object? sender, EventArgs e)
-    {
-        _ = Dispatcher.InvokeAsync(() =>
-        {
-            Topmost = false;
-            Topmost = true;
-        }, DispatcherPriority.ApplicationIdle);
-    }
-
     private async void Window_LocationChanged(object? sender, EventArgs e)
     {
         if (!_hasLoaded)

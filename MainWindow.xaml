@@ -11,7 +11,6 @@
         Topmost="True"
         ShowInTaskbar="False"
         Loaded="Window_Loaded"
-        Deactivated="Window_Deactivated"
         Closing="Window_Closing"
         LocationChanged="Window_LocationChanged"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
