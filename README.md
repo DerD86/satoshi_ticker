@@ -86,7 +86,7 @@ dist\framework-dependent\SatoshiTicker.exe
 
 ## Richtigen Windows-Installer erstellen
 
-Für einen klassischen Installationsassistenten wird **Inno Setup 6** benötigt.
+Für das lokale Erstellen des klassischen Installationsassistenten wird **Inno Setup 6** benötigt. Auf dem Ziel-PC ist Inno Setup nicht erforderlich.
 
 1. Erstelle zunächst die portable EXE oder lasse das Skript dies automatisch erledigen.
 2. Installiere Inno Setup 6.
@@ -101,6 +101,16 @@ Der fertige Installer liegt danach hier:
 ```text
 dist\installer\SatoshiTicker-Setup-1.0.0.exe
 ```
+
+`Build-Installer.ps1` veröffentlicht die Anwendung automatisch als eigenständigen Release-Build für `win-x64`. Benutzer benötigen daher weder Visual Studio Code noch das .NET SDK oder eine separat installierte .NET-Laufzeit.
+
+## Installer installieren und prüfen
+
+1. Starte `dist\installer\SatoshiTicker-Setup-1.0.0.exe` auf einem Windows-10- oder Windows-11-PC.
+2. Aktiviere bei Bedarf die optionale Desktop-Verknüpfung und schließe die Installation ab.
+3. Starte **Satoshi Ticker** über das Windows-Startmenü und prüfe die Eingabe des BTC-Bestands sowie die gespeicherte Fensterposition.
+4. Schließe die Anwendung und starte sie erneut über das Startmenü, um die lokal gespeicherten Einstellungen zu prüfen.
+5. Deinstalliere die Anwendung anschließend über **Einstellungen > Apps > Installierte Apps > Satoshi Ticker**.
 
 Der Installer:
 
