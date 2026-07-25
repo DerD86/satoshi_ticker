@@ -64,7 +64,7 @@ public partial class MainWindow : Window
     {
         Rect workArea = SystemParameters.WorkArea;
 
-        double defaultLeft = workArea.Right - Width - 12;
+        double defaultLeft = workArea.Right - ActualWidth - 12;
         double defaultTop = workArea.Bottom - Height - 8;
 
         Left = IsPositionVisible(_settings.WindowLeft, _settings.WindowTop)
@@ -89,7 +89,7 @@ public partial class MainWindow : Window
             SystemParameters.VirtualScreenWidth,
             SystemParameters.VirtualScreenHeight);
 
-        Rect proposedWindow = new(left.Value, top.Value, Width, Height);
+        Rect proposedWindow = new(left.Value, top.Value, ActualWidth, Height);
         return virtualScreen.IntersectsWith(proposedWindow);
     }
 
