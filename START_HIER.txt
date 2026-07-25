@@ -1,0 +1,30 @@
+SATOSHI TICKER – START HIER
+===========================
+
+1. Projekt in VS Code öffnen
+2. Terminal öffnen
+3. Teststart:
+
+   dotnet restore
+   dotnet run
+
+PORTABLE EXE ERSTELLEN
+----------------------
+Im Projektordner ausführen:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\Publish-Portable.ps1
+
+Die fertige Datei liegt hier:
+
+   .\dist\portable\SatoshiTicker.exe
+
+INSTALLER ERSTELLEN
+-------------------
+1. Inno Setup 6 installieren
+2. Dann ausführen:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\Build-Installer.ps1
+
+Der fertige Installer liegt hier:
+
+   .\dist\installer\SatoshiTicker-Setup-1.0.0.exe

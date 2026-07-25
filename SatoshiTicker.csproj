@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AssemblyName>SatoshiTicker</AssemblyName>
+    <RootNamespace>SatoshiTicker</RootNamespace>
+    <ApplicationIcon>Assets\SatoshiTicker.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Authors>Webentwicklung Schulte</Authors>
+    <Product>Satoshi Ticker</Product>
+    <Description>Zeigt den Euro-Gegenwert eines manuell eingetragenen Bitcoin-Bestands und die Kursänderung der letzten zehn Minuten.</Description>
+  </PropertyGroup>
+</Project>
