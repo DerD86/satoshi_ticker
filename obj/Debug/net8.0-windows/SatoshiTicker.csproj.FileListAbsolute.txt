@@ -20,3 +20,4 @@ C:\Users\dirks\OneDrive\Desktop\Bitcoin\Projekt Satoshi Ticker für Windows\Sato
 C:\Users\dirks\OneDrive\Desktop\Bitcoin\Projekt Satoshi Ticker für Windows\SatoshiTicker-v1.0\satoshi_ticker\obj\Debug\net8.0-windows\SatoshiTicker.pdb
 C:\Users\dirks\OneDrive\Desktop\Bitcoin\Projekt Satoshi Ticker für Windows\SatoshiTicker-v1.0\satoshi_ticker\obj\Debug\net8.0-windows\SatoshiTicker.genruntimeconfig.cache
 C:\Users\dirks\OneDrive\Desktop\Bitcoin\Projekt Satoshi Ticker für Windows\SatoshiTicker-v1.0\satoshi_ticker\obj\Debug\net8.0-windows\ref\SatoshiTicker.dll
+C:\Users\dirks\OneDrive\Desktop\Bitcoin\Projekt Satoshi Ticker für Windows\SatoshiTicker-v1.0\satoshi_ticker\obj\Debug\net8.0-windows\SatoshiTicker.sourcelink.json
