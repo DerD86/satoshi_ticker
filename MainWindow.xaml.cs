@@ -109,7 +109,7 @@ public partial class MainWindow : Window
             BitcoinMarketSnapshot snapshot = await _priceService.GetSnapshotAsync();
             decimal euroValue = snapshot.CurrentPriceEuro * _settings.BitcoinAmount;
 
-            PortfolioValueText.Text = euroValue.ToString("N2 '€'", GermanCulture);
+            PortfolioValueText.Text = $"{euroValue.ToString("N2", GermanCulture)} €";
             UpdateTrend(snapshot.ChangePercent);
 
             ToolTip = string.Join(
