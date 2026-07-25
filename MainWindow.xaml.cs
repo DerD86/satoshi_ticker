@@ -50,7 +50,7 @@ public partial class MainWindow : Window
         AutoStartMenuItem.IsChecked = _settings.StartWithWindows;
         _hasLoaded = true;
 
-        if (_settings.BitcoinAmount <= 0 && !ShowAmountDialog())
+        if (_settings.BitcoinAmount <= 0 && !await ShowAmountDialogAsync())
         {
             PortfolioValueText.Text = "BTC-Bestand fehlt";
             SetNeutralTrend();
@@ -166,13 +166,13 @@ public partial class MainWindow : Window
 
     private async void ChangeBitcoinAmount_Click(object sender, RoutedEventArgs e)
     {
-        if (ShowAmountDialog())
+        if (await ShowAmountDialogAsync())
         {
             await RefreshPriceAsync();
         }
     }
 
-    private bool ShowAmountDialog()
+    private async Task<bool> ShowAmountDialogAsync()
     {
         AmountDialog dialog = new(_settings.BitcoinAmount)
         {
@@ -185,7 +185,7 @@ public partial class MainWindow : Window
         }
 
         _settings.BitcoinAmount = dialog.BitcoinAmount;
-        _settingsService.SaveAsync(_settings).GetAwaiter().GetResult();
+        await _settingsService.SaveAsync(_settings);
         return true;
     }
 
