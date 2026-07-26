@@ -10,17 +10,25 @@
         Background="Transparent"
         Topmost="True"
         ShowInTaskbar="False"
+        SourceInitialized="Window_SourceInitialized"
         Loaded="Window_Loaded"
+        Deactivated="Window_Deactivated"
         Closing="Window_Closing"
+        ToolTipOpening="Window_ToolTipOpening"
+        ToolTipClosing="Window_ToolTipClosing"
         LocationChanged="Window_LocationChanged"
+        MouseEnter="Window_MouseEnter"
+        MouseLeave="Window_MouseLeave"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
-    <Border Background="#F21B1B1B"
-            BorderBrush="#555555"
+    <Border Background="{DynamicResource TickerBackgroundBrush}"
+            BorderBrush="{DynamicResource TickerBorderBrush}"
             BorderThickness="1"
             CornerRadius="9"
-            Padding="12,6">
+            Padding="12,6"
+            Effect="{DynamicResource TickerShadow}">
         <Border.ContextMenu>
-            <ContextMenu>
+            <ContextMenu Opened="ContextMenu_Opened"
+                         Closed="ContextMenu_Closed">
                 <MenuItem Header="BTC-Bestand ändern" Click="ChangeBitcoinAmount_Click"/>
                 <MenuItem Header="Jetzt aktualisieren" Click="RefreshNow_Click"/>
                 <Separator/>
@@ -28,6 +36,17 @@
                           Header="Mit Windows starten"
                           IsCheckable="True"
                           Click="AutoStart_Click"/>
+                <Separator/>
+                <MenuItem Header="Darstellung">
+                    <MenuItem x:Name="DarkModeMenuItem"
+                              Header="Dark Mode"
+                              IsCheckable="True"
+                              Click="DarkMode_Click"/>
+                    <MenuItem x:Name="LightModeMenuItem"
+                              Header="Light Mode"
+                              IsCheckable="True"
+                              Click="LightMode_Click"/>
+                </MenuItem>
                 <Separator/>
                 <MenuItem Header="Beenden" Click="Exit_Click"/>
             </ContextMenu>
@@ -44,7 +63,7 @@
                        Text="₿"
                        FontSize="21"
                        FontWeight="Bold"
-                       Foreground="#F7931A"
+                       Foreground="{DynamicResource BitcoinAccentBrush}"
                        VerticalAlignment="Center"
                        Margin="0,0,9,0"/>
 
@@ -53,7 +72,7 @@
                        Text="Lade Kurs …"
                        FontSize="16"
                        FontWeight="SemiBold"
-                       Foreground="White"
+                       Foreground="{DynamicResource PrimaryTextBrush}"
                        VerticalAlignment="Center"/>
 
             <StackPanel Grid.Column="2"
