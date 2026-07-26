@@ -10,8 +10,11 @@
         Background="Transparent"
         Topmost="True"
         ShowInTaskbar="False"
+        SourceInitialized="Window_SourceInitialized"
         Loaded="Window_Loaded"
+        Deactivated="Window_Deactivated"
         Closing="Window_Closing"
+        ToolTipOpening="Window_ToolTipOpening"
         LocationChanged="Window_LocationChanged"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Border Background="#F21B1B1B"
