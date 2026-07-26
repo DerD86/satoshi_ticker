@@ -37,13 +37,12 @@
                           IsCheckable="True"
                           Click="AutoStart_Click"/>
                 <Separator/>
-                <MenuItem Header="Darstellung">
-                    <MenuItem x:Name="DarkModeMenuItem"
-                              Header="Dark Mode"
+                <MenuItem x:Name="AppearanceMenuItem"
+                          Header="Darstellung">
+                    <MenuItem Header="Dark Mode"
                               IsCheckable="True"
                               Click="DarkMode_Click"/>
-                    <MenuItem x:Name="LightModeMenuItem"
-                              Header="Light Mode"
+                    <MenuItem Header="Light Mode"
                               IsCheckable="True"
                               Click="LightMode_Click"/>
                 </MenuItem>
