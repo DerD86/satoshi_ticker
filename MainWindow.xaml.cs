@@ -50,7 +50,7 @@ public partial class MainWindow : Window
         AutoStartMenuItem.IsChecked = _settings.StartWithWindows;
         _hasLoaded = true;
 
-        if (_settings.BitcoinAmount <= 0 && !ShowAmountDialog())
+        if (_settings.BitcoinAmount <= 0 && !await ShowAmountDialogAsync())
         {
             PortfolioValueText.Text = "BTC-Bestand fehlt";
             SetNeutralTrend();
@@ -64,7 +64,7 @@ public partial class MainWindow : Window
     {
         Rect workArea = SystemParameters.WorkArea;
 
-        double defaultLeft = workArea.Right - Width - 12;
+        double defaultLeft = workArea.Right - ActualWidth - 12;
         double defaultTop = workArea.Bottom - Height - 8;
 
         Left = IsPositionVisible(_settings.WindowLeft, _settings.WindowTop)
@@ -89,7 +89,7 @@ public partial class MainWindow : Window
             SystemParameters.VirtualScreenWidth,
             SystemParameters.VirtualScreenHeight);
 
-        Rect proposedWindow = new(left.Value, top.Value, Width, Height);
+        Rect proposedWindow = new(left.Value, top.Value, ActualWidth, Height);
         return virtualScreen.IntersectsWith(proposedWindow);
     }
 
@@ -109,7 +109,7 @@ public partial class MainWindow : Window
             BitcoinMarketSnapshot snapshot = await _priceService.GetSnapshotAsync();
             decimal euroValue = snapshot.CurrentPriceEuro * _settings.BitcoinAmount;
 
-            PortfolioValueText.Text = euroValue.ToString("N2 '€'", GermanCulture);
+            PortfolioValueText.Text = $"{euroValue.ToString("N2", GermanCulture)} €";
             UpdateTrend(snapshot.ChangePercent);
 
             ToolTip = string.Join(
@@ -166,13 +166,13 @@ public partial class MainWindow : Window
 
     private async void ChangeBitcoinAmount_Click(object sender, RoutedEventArgs e)
     {
-        if (ShowAmountDialog())
+        if (await ShowAmountDialogAsync())
         {
             await RefreshPriceAsync();
         }
     }
 
-    private bool ShowAmountDialog()
+    private async Task<bool> ShowAmountDialogAsync()
     {
         AmountDialog dialog = new(_settings.BitcoinAmount)
         {
@@ -185,7 +185,7 @@ public partial class MainWindow : Window
         }
 
         _settings.BitcoinAmount = dialog.BitcoinAmount;
-        _settingsService.SaveAsync(_settings).GetAwaiter().GetResult();
+        await _settingsService.SaveAsync(_settings);
         return true;
     }
 
