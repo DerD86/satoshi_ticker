@@ -34,6 +34,7 @@ public partial class MainWindow : Window
     private AppSettings _settings = new();
     private bool _isRefreshing;
     private bool _hasLoaded;
+    private int _remainingTopmostRecoveryAttempts;
     private IntPtr _windowHandle;
     private IntPtr _foregroundEventHook;
     private NativeMethods.WinEventDelegate? _foregroundEventHandler;
@@ -51,13 +52,17 @@ public partial class MainWindow : Window
 
         _topmostRecoveryTimer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromMilliseconds(500)
+            Interval = TimeSpan.FromMilliseconds(250)
         };
 
         _topmostRecoveryTimer.Tick += (_, _) =>
         {
-            _topmostRecoveryTimer.Stop();
             EnsureTopmost();
+
+            if (--_remainingTopmostRecoveryAttempts <= 0)
+            {
+                _topmostRecoveryTimer.Stop();
+            }
         };
     }
 
@@ -95,6 +100,7 @@ public partial class MainWindow : Window
     private void RestoreTopmostAfterForegroundChange()
     {
         EnsureTopmost();
+        _remainingTopmostRecoveryAttempts = 8;
         _topmostRecoveryTimer.Stop();
         _topmostRecoveryTimer.Start();
     }
