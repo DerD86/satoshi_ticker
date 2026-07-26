@@ -34,7 +34,7 @@ public partial class MainWindow : Window
     private AppSettings _settings = new();
     private bool _isRefreshing;
     private bool _hasLoaded;
-    private int _remainingTopmostRecoveryAttempts;
+    private bool _canEnableToolTipOnMouseEnter;
     private IntPtr _windowHandle;
     private IntPtr _foregroundEventHook;
     private NativeMethods.WinEventDelegate? _foregroundEventHandler;
@@ -52,18 +52,10 @@ public partial class MainWindow : Window
 
         _topmostRecoveryTimer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromMilliseconds(250)
+            Interval = TimeSpan.FromMilliseconds(500)
         };
 
-        _topmostRecoveryTimer.Tick += (_, _) =>
-        {
-            EnsureTopmost();
-
-            if (--_remainingTopmostRecoveryAttempts <= 0)
-            {
-                _topmostRecoveryTimer.Stop();
-            }
-        };
+        _topmostRecoveryTimer.Tick += (_, _) => EnsureTopmost();
     }
 
     private void Window_SourceInitialized(object? sender, EventArgs e)
@@ -89,6 +81,7 @@ public partial class MainWindow : Window
             NativeMethods.WineventOutofcontext);
 
         EnsureTopmost();
+        _topmostRecoveryTimer.Start();
     }
 
     private void Window_Deactivated(object? sender, EventArgs e)
@@ -100,9 +93,6 @@ public partial class MainWindow : Window
     private void RestoreTopmostAfterForegroundChange()
     {
         EnsureTopmost();
-        _remainingTopmostRecoveryAttempts = 8;
-        _topmostRecoveryTimer.Stop();
-        _topmostRecoveryTimer.Start();
     }
 
     private void EnsureTopmost()
@@ -127,9 +117,7 @@ public partial class MainWindow : Window
 
     private void Window_ToolTipOpening(object sender, ToolTipEventArgs e)
     {
-        if (_windowHandle == IntPtr.Zero ||
-            !NativeMethods.GetCursorPos(out NativeMethods.Point cursorPosition) ||
-            NativeMethods.WindowFromPoint(cursorPosition) != _windowHandle)
+        if (!IsCursorOverTicker())
         {
             e.Handled = true;
         }
@@ -137,8 +125,29 @@ public partial class MainWindow : Window
 
     private void CloseToolTip()
     {
+        _canEnableToolTipOnMouseEnter = !IsCursorOverTicker();
         ToolTipService.SetIsEnabled(this, false);
-        ToolTipService.SetIsEnabled(this, true);
+    }
+
+    private void Window_MouseLeave(object sender, MouseEventArgs e)
+    {
+        _canEnableToolTipOnMouseEnter = true;
+    }
+
+    private void Window_MouseEnter(object sender, MouseEventArgs e)
+    {
+        if (_canEnableToolTipOnMouseEnter && IsCursorOverTicker())
+        {
+            _canEnableToolTipOnMouseEnter = false;
+            ToolTipService.SetIsEnabled(this, true);
+        }
+    }
+
+    private bool IsCursorOverTicker()
+    {
+        return _windowHandle != IntPtr.Zero &&
+               NativeMethods.GetCursorPos(out NativeMethods.Point cursorPosition) &&
+               NativeMethods.WindowFromPoint(cursorPosition) == _windowHandle;
     }
 
     private async void Window_Loaded(object sender, RoutedEventArgs e)
