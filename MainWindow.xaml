@@ -20,15 +20,20 @@
         MouseEnter="Window_MouseEnter"
         MouseLeave="Window_MouseLeave"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
-    <Grid Background="Transparent"
-          Effect="{DynamicResource TickerShadow}">
-    <Border x:Name="TickerBorder"
-            Background="{DynamicResource TickerBackgroundBrush}"
+    <Grid Effect="{DynamicResource TickerShadow}">
+    <Border Background="{DynamicResource TickerBackgroundBrush}"
             BorderBrush="{DynamicResource TickerBorderBrush}"
             BorderThickness="1"
             CornerRadius="9"
-            Padding="12,6"
-            SizeChanged="TickerBorder_SizeChanged">
+            Padding="12,6">
+        <Border.OpacityMask>
+            <VisualBrush>
+                <VisualBrush.Visual>
+                    <Border Background="White"
+                            CornerRadius="9"/>
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </Border.OpacityMask>
         <Border.ContextMenu>
             <ContextMenu Opened="ContextMenu_Opened"
                          Closed="ContextMenu_Closed">
