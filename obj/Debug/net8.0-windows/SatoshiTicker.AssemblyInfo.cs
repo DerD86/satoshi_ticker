@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Zeigt den Euro-Gegenwert eines manuell eingetragenen Bitcoin-Bestands und die Kur" +
     "sänderung der letzten zehn Minuten.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+51796852a6fe491bc2920a7c7904e34ed686eb09")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+357d5eac94f0350cfd62ee08683e89e3f4e68468")]
 [assembly: System.Reflection.AssemblyProductAttribute("Satoshi Ticker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SatoshiTicker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
