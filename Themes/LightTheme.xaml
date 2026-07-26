@@ -14,15 +14,11 @@
                       ShadowDepth="2"
                       Opacity="0.35"/>
 
-    <Style TargetType="ContextMenu">
-        <Setter Property="Background" Value="{DynamicResource PopupBackgroundBrush}"/>
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource PopupBorderBrush}"/>
-    </Style>
-
-    <Style TargetType="MenuItem">
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-    </Style>
+    <DropShadowEffect x:Key="TrendTextEffect"
+                      Color="#80000000"
+                      BlurRadius="1"
+                      ShadowDepth="1"
+                      Opacity="0.28"/>
 
     <Style TargetType="ToolTip">
         <Setter Property="Background" Value="{DynamicResource PopupBackgroundBrush}"/>
