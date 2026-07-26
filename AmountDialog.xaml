@@ -6,8 +6,8 @@
         Height="220"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="#202020"
-        Foreground="White"
+        Background="{DynamicResource DialogBackgroundBrush}"
+        Foreground="{DynamicResource PrimaryTextBrush}"
         ShowInTaskbar="False">
   <Grid Margin="22">
     <Grid.RowDefinitions>
@@ -45,7 +45,7 @@
 
     <TextBlock Grid.Row="2"
                Text="Beispiel: 0,00128456 BTC — hier wird kein Eurobetrag eingetragen."
-               Foreground="#B8B8B8"
+               Foreground="{DynamicResource SecondaryTextBrush}"
                TextWrapping="Wrap"
                Margin="0,8,0,0"/>
 

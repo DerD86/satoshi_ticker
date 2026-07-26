@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 C:\Users\dirks\OneDrive\Desktop\Bitcoin\Projekt Satoshi Ticker für Windows\SatoshiTicker-v1.0\satoshi_ticker\App.xaml
-21859742998
+41013653657
 
 9-1407064447
 198-1551921639
-AmountDialog.xaml;MainWindow.xaml;
+AmountDialog.xaml;MainWindow.xaml;Themes\DarkTheme.xaml;Themes\LightTheme.xaml;
 
 False
 
