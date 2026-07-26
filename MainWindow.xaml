@@ -21,19 +21,19 @@
         MouseLeave="Window_MouseLeave"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Grid Effect="{DynamicResource TickerShadow}">
+    <Grid.OpacityMask>
+        <VisualBrush>
+            <VisualBrush.Visual>
+                <Border Background="White"
+                        CornerRadius="9"/>
+            </VisualBrush.Visual>
+        </VisualBrush>
+    </Grid.OpacityMask>
     <Border Background="{DynamicResource TickerBackgroundBrush}"
             BorderBrush="{DynamicResource TickerBorderBrush}"
             BorderThickness="1"
             CornerRadius="9"
             Padding="12,6">
-        <Border.OpacityMask>
-            <VisualBrush>
-                <VisualBrush.Visual>
-                    <Border Background="White"
-                            CornerRadius="9"/>
-                </VisualBrush.Visual>
-            </VisualBrush>
-        </Border.OpacityMask>
         <Border.ContextMenu>
             <ContextMenu Opened="ContextMenu_Opened"
                          Closed="ContextMenu_Closed">
