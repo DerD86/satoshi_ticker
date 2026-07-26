@@ -1,0 +1,26 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+
+# Rider
+.idea/
+
+# VS Code Workspace
+*.code-workspace
+
+# User files
+*.user
+*.suo
+
+# Logs
+*.log
+
+# NuGet
+packages/
+
+# Windows
+Thumbs.db
+Desktop.ini
