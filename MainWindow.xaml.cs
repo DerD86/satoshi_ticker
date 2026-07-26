@@ -37,6 +37,7 @@ public partial class MainWindow : Window
     private bool _canEnableToolTipOnMouseEnter;
     private bool _isToolTipOpen;
     private bool _isContextMenuOpen;
+    private bool _isHiddenForFullscreen;
     private IntPtr _windowHandle;
     private IntPtr _foregroundEventHook;
     private NativeMethods.WinEventDelegate? _foregroundEventHandler;
@@ -60,9 +61,15 @@ public partial class MainWindow : Window
         _topmostRecoveryTimer.Tick += (_, _) => EnsureTopmost();
     }
 
+    private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        ApplyRoundedWindowRegion();
+    }
+
     private void Window_SourceInitialized(object? sender, EventArgs e)
     {
         _windowHandle = new WindowInteropHelper(this).Handle;
+        ApplyRoundedWindowRegion();
 
         int extendedStyle = NativeMethods.GetWindowLong(_windowHandle, NativeMethods.GwlExStyle);
         NativeMethods.SetWindowLong(
@@ -86,6 +93,33 @@ public partial class MainWindow : Window
         _topmostRecoveryTimer.Start();
     }
 
+    private void ApplyRoundedWindowRegion()
+    {
+        if (_windowHandle == IntPtr.Zero || ActualWidth <= 0 || ActualHeight <= 0)
+        {
+            return;
+        }
+
+        Matrix transformToDevice = PresentationSource.FromVisual(this)?.CompositionTarget?.TransformToDevice
+            ?? Matrix.Identity;
+
+        int width = (int)Math.Ceiling(ActualWidth * transformToDevice.M11);
+        int height = (int)Math.Ceiling(ActualHeight * transformToDevice.M22);
+        int cornerDiameter = (int)Math.Round(18 * transformToDevice.M11);
+        IntPtr region = NativeMethods.CreateRoundRectRgn(
+            0,
+            0,
+            width + 1,
+            height + 1,
+            cornerDiameter,
+            cornerDiameter);
+
+        if (region != IntPtr.Zero && NativeMethods.SetWindowRgn(_windowHandle, region, true) == 0)
+        {
+            NativeMethods.DeleteObject(region);
+        }
+    }
+
     private void Window_Deactivated(object? sender, EventArgs e)
     {
         CloseToolTip();
@@ -99,7 +133,21 @@ public partial class MainWindow : Window
 
     private void EnsureTopmost()
     {
-        if (_windowHandle == IntPtr.Zero || _isToolTipOpen || _isContextMenuOpen)
+        if (_windowHandle == IntPtr.Zero)
+        {
+            return;
+        }
+
+        bool shouldHideForFullscreen = IsForegroundWindowFullscreen();
+        if (shouldHideForFullscreen != _isHiddenForFullscreen)
+        {
+            NativeMethods.ShowWindow(
+                _windowHandle,
+                shouldHideForFullscreen ? NativeMethods.SwHide : NativeMethods.SwShownoactivate);
+            _isHiddenForFullscreen = shouldHideForFullscreen;
+        }
+
+        if (_isHiddenForFullscreen || _isToolTipOpen || _isContextMenuOpen)
         {
             return;
         }
@@ -114,6 +162,37 @@ public partial class MainWindow : Window
             NativeMethods.SwpNomove |
             NativeMethods.SwpNosize |
             NativeMethods.SwpNoactivate);
+    }
+
+    private bool IsForegroundWindowFullscreen()
+    {
+        IntPtr foregroundWindow = NativeMethods.GetForegroundWindow();
+        if (foregroundWindow == IntPtr.Zero ||
+            foregroundWindow == _windowHandle ||
+            foregroundWindow == NativeMethods.GetShellWindow() ||
+            foregroundWindow == NativeMethods.GetDesktopWindow() ||
+            !NativeMethods.GetWindowRect(foregroundWindow, out NativeMethods.Rect windowRect))
+        {
+            return false;
+        }
+
+        IntPtr monitor = NativeMethods.MonitorFromWindow(
+            foregroundWindow,
+            NativeMethods.MonitorDefaulttonearest);
+        NativeMethods.MonitorInfo monitorInfo = new()
+        {
+            Size = Marshal.SizeOf<NativeMethods.MonitorInfo>()
+        };
+
+        if (!NativeMethods.GetMonitorInfo(monitor, ref monitorInfo))
+        {
+            return false;
+        }
+
+        return windowRect.Left <= monitorInfo.Monitor.Left &&
+               windowRect.Top <= monitorInfo.Monitor.Top &&
+               windowRect.Right >= monitorInfo.Monitor.Right &&
+               windowRect.Bottom >= monitorInfo.Monitor.Bottom;
     }
 
     private void Window_ToolTipOpening(object sender, ToolTipEventArgs e)
@@ -181,7 +260,16 @@ public partial class MainWindow : Window
             StringComparison.OrdinalIgnoreCase);
         LightModeMenuItem.IsChecked = !DarkModeMenuItem.IsChecked;
         RestoreOrSetDefaultPosition();
-        AutoStartMenuItem.IsChecked = _settings.StartWithWindows;
+        try
+        {
+            AutoStartService.SetEnabled(_settings.StartWithWindows);
+            AutoStartMenuItem.IsChecked = _settings.StartWithWindows;
+        }
+        catch
+        {
+            AutoStartMenuItem.IsChecked = false;
+            _settings.StartWithWindows = false;
+        }
         _hasLoaded = true;
 
         if (_settings.BitcoinAmount <= 0 && !await ShowAmountDialogAsync())
@@ -432,6 +520,9 @@ public partial class MainWindow : Window
         internal const uint SwpNosize = 0x0001;
         internal const uint SwpNomove = 0x0002;
         internal const uint SwpNoactivate = 0x0010;
+        internal const uint MonitorDefaulttonearest = 0x00000002;
+        internal const int SwHide = 0;
+        internal const int SwShownoactivate = 4;
         internal static readonly IntPtr HwndTopmost = new(-1);
 
         internal delegate void WinEventDelegate(
@@ -448,6 +539,24 @@ public partial class MainWindow : Window
         {
             internal int X;
             internal int Y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct Rect
+        {
+            internal int Left;
+            internal int Top;
+            internal int Right;
+            internal int Bottom;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct MonitorInfo
+        {
+            internal int Size;
+            internal Rect Monitor;
+            internal Rect WorkArea;
+            internal uint Flags;
         }
 
         [DllImport("user32.dll")]
@@ -487,6 +596,46 @@ public partial class MainWindow : Window
 
         [DllImport("user32.dll")]
         internal static extern IntPtr WindowFromPoint(Point point);
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr GetShellWindow();
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr GetDesktopWindow();
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetWindowRect(IntPtr windowHandle, out Rect rectangle);
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr MonitorFromWindow(IntPtr windowHandle, uint flags);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetMonitorInfo(IntPtr monitor, ref MonitorInfo monitorInfo);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool ShowWindow(IntPtr windowHandle, int command);
+
+        [DllImport("gdi32.dll")]
+        internal static extern IntPtr CreateRoundRectRgn(
+            int left,
+            int top,
+            int right,
+            int bottom,
+            int ellipseWidth,
+            int ellipseHeight);
+
+        [DllImport("user32.dll")]
+        internal static extern int SetWindowRgn(IntPtr windowHandle, IntPtr region, bool redraw);
+
+        [DllImport("gdi32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool DeleteObject(IntPtr graphicsObject);
     }
 
     private void Exit_Click(object sender, RoutedEventArgs e)
