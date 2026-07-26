@@ -9,6 +9,19 @@
                 <ResourceDictionary Source="Themes/DarkTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <SolidColorBrush x:Key="BitcoinAccentBrush" Color="#F7931A"/>
+            <SolidColorBrush x:Key="MenuBackgroundBrush" Color="#FAFFFFFF"/>
+            <SolidColorBrush x:Key="MenuForegroundBrush" Color="#202020"/>
+            <SolidColorBrush x:Key="MenuBorderBrush" Color="#D0D0D0"/>
+
+            <Style TargetType="ContextMenu">
+                <Setter Property="Background" Value="{StaticResource MenuBackgroundBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource MenuForegroundBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource MenuBorderBrush}"/>
+            </Style>
+
+            <Style TargetType="MenuItem">
+                <Setter Property="Foreground" Value="{StaticResource MenuForegroundBrush}"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
