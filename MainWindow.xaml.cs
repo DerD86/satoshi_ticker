@@ -60,6 +60,14 @@ public partial class MainWindow : Window
         _topmostRecoveryTimer.Tick += (_, _) => EnsureTopmost();
     }
 
+    private void TickerBorder_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        TickerBorder.Clip = new RectangleGeometry(
+            new Rect(TickerBorder.RenderSize),
+            TickerBorder.CornerRadius.TopLeft,
+            TickerBorder.CornerRadius.TopLeft);
+    }
+
     private void Window_SourceInitialized(object? sender, EventArgs e)
     {
         _windowHandle = new WindowInteropHelper(this).Handle;
