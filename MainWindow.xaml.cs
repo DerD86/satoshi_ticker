@@ -41,6 +41,9 @@ public partial class MainWindow : Window
     private IntPtr _foregroundEventHook;
     private NativeMethods.WinEventDelegate? _foregroundEventHandler;
 
+    private MenuItem DarkModeMenuItem => (MenuItem)AppearanceMenuItem.Items[0];
+    private MenuItem LightModeMenuItem => (MenuItem)AppearanceMenuItem.Items[1];
+
     public MainWindow()
     {
         InitializeComponent();
