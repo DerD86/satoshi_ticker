@@ -20,15 +20,9 @@
         MouseEnter="Window_MouseEnter"
         MouseLeave="Window_MouseLeave"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
-    <Grid Effect="{DynamicResource TickerShadow}">
-    <Grid.OpacityMask>
-        <VisualBrush>
-            <VisualBrush.Visual>
-                <Border Background="White"
-                        CornerRadius="9"/>
-            </VisualBrush.Visual>
-        </VisualBrush>
-    </Grid.OpacityMask>
+    <Grid x:Name="TickerSurface"
+          Effect="{DynamicResource TickerShadow}"
+          SizeChanged="TickerSurface_SizeChanged">
     <Border Background="{DynamicResource TickerBackgroundBrush}"
             BorderBrush="{DynamicResource TickerBorderBrush}"
             BorderThickness="1"

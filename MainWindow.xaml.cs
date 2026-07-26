@@ -60,6 +60,22 @@ public partial class MainWindow : Window
         _topmostRecoveryTimer.Tick += (_, _) => EnsureTopmost();
     }
 
+    private void TickerSurface_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (sender is not Grid tickerSurface)
+        {
+            return;
+        }
+
+        RectangleGeometry roundedWindow = new(
+            new Rect(e.NewSize),
+            9,
+            9);
+
+        tickerSurface.OpacityMask = new DrawingBrush(
+            new GeometryDrawing(Brushes.White, null, roundedWindow));
+    }
+
     private void Window_SourceInitialized(object? sender, EventArgs e)
     {
         _windowHandle = new WindowInteropHelper(this).Handle;
