@@ -17,17 +17,16 @@
         ToolTipOpening="Window_ToolTipOpening"
         ToolTipClosing="Window_ToolTipClosing"
         LocationChanged="Window_LocationChanged"
+        SizeChanged="Window_SizeChanged"
         MouseEnter="Window_MouseEnter"
         MouseLeave="Window_MouseLeave"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
-    <Grid x:Name="TickerSurface"
-          Effect="{DynamicResource TickerShadow}"
-          SizeChanged="TickerSurface_SizeChanged">
     <Border Background="{DynamicResource TickerBackgroundBrush}"
             BorderBrush="{DynamicResource TickerBorderBrush}"
             BorderThickness="1"
             CornerRadius="9"
-            Padding="12,6">
+            Padding="12,6"
+            Effect="{DynamicResource TickerShadow}">
         <Border.ContextMenu>
             <ContextMenu Opened="ContextMenu_Opened"
                          Closed="ContextMenu_Closed">
@@ -95,5 +94,4 @@
             </StackPanel>
         </Grid>
     </Border>
-    </Grid>
 </Window>

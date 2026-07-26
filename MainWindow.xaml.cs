@@ -60,25 +60,15 @@ public partial class MainWindow : Window
         _topmostRecoveryTimer.Tick += (_, _) => EnsureTopmost();
     }
 
-    private void TickerSurface_SizeChanged(object sender, SizeChangedEventArgs e)
+    private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        if (sender is not Grid tickerSurface)
-        {
-            return;
-        }
-
-        RectangleGeometry roundedWindow = new(
-            new Rect(e.NewSize),
-            9,
-            9);
-
-        tickerSurface.OpacityMask = new DrawingBrush(
-            new GeometryDrawing(Brushes.White, null, roundedWindow));
+        ApplyRoundedWindowRegion();
     }
 
     private void Window_SourceInitialized(object? sender, EventArgs e)
     {
         _windowHandle = new WindowInteropHelper(this).Handle;
+        ApplyRoundedWindowRegion();
 
         int extendedStyle = NativeMethods.GetWindowLong(_windowHandle, NativeMethods.GwlExStyle);
         NativeMethods.SetWindowLong(
@@ -100,6 +90,33 @@ public partial class MainWindow : Window
 
         EnsureTopmost();
         _topmostRecoveryTimer.Start();
+    }
+
+    private void ApplyRoundedWindowRegion()
+    {
+        if (_windowHandle == IntPtr.Zero || ActualWidth <= 0 || ActualHeight <= 0)
+        {
+            return;
+        }
+
+        Matrix transformToDevice = PresentationSource.FromVisual(this)?.CompositionTarget?.TransformToDevice
+            ?? Matrix.Identity;
+
+        int width = (int)Math.Ceiling(ActualWidth * transformToDevice.M11);
+        int height = (int)Math.Ceiling(ActualHeight * transformToDevice.M22);
+        int cornerDiameter = (int)Math.Round(18 * transformToDevice.M11);
+        IntPtr region = NativeMethods.CreateRoundRectRgn(
+            0,
+            0,
+            width + 1,
+            height + 1,
+            cornerDiameter,
+            cornerDiameter);
+
+        if (region != IntPtr.Zero && NativeMethods.SetWindowRgn(_windowHandle, region, true) == 0)
+        {
+            NativeMethods.DeleteObject(region);
+        }
     }
 
     private void Window_Deactivated(object? sender, EventArgs e)
@@ -503,6 +520,22 @@ public partial class MainWindow : Window
 
         [DllImport("user32.dll")]
         internal static extern IntPtr WindowFromPoint(Point point);
+
+        [DllImport("gdi32.dll")]
+        internal static extern IntPtr CreateRoundRectRgn(
+            int left,
+            int top,
+            int right,
+            int bottom,
+            int ellipseWidth,
+            int ellipseHeight);
+
+        [DllImport("user32.dll")]
+        internal static extern int SetWindowRgn(IntPtr windowHandle, IntPtr region, bool redraw);
+
+        [DllImport("gdi32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool DeleteObject(IntPtr graphicsObject);
     }
 
     private void Exit_Click(object sender, RoutedEventArgs e)
